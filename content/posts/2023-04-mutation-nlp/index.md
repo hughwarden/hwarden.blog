@@ -7,8 +7,6 @@ tags: ["Machine Learning", "Genetics", "R", "Python"]
 series: []
 series_order: 1
 showAuthor: true
-authors:
-  - "Hugh Warden"
 showAuthorsBadges : true 
 ---
 
