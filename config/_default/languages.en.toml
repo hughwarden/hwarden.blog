@@ -6,7 +6,7 @@ weight = 1
 rtl = false
 
 title = "Hugh Warden - Blog"
-# logo = "img/author/profile.jpg"
+logo = "img/site/inverted-logo.png"
 description = "Data Science Blog"
 # copyright = "Copy, _right?_ :thinking_face:"
 
@@ -14,9 +14,9 @@ dateFormat = "2 January 2006"
 
 [author]
   name = "Hugh Warden"
-#   image = "img/blowfish_logo.png"
+  image = "img/author/profile.jpg"
 #   headline = "I'm only human"
-  bio = "I am a PhD student at the Institute of Genetics and Cancer, part of the University of Edinburgh."
+  bio = "I am a PhD student who enjoys doing data science and machine learning projects."
   links = [
     { email = "mailto:hugh.warden@outlook.com" },
     { link = "https://hwarden.com/" },
