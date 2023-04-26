@@ -1,5 +1,5 @@
 ---
-title: "Test Article"
+title: "Classifying Oncogenes from PubMED Abstracts"
 date: 2023-04-26T02:46:21+01:00
 description: "Training a classifier to recognise gain and loss of function mutations from abstracts of papers on PubMED."
 slug: "mutation-nlp"
@@ -97,7 +97,7 @@ for gene_type in search_genes.keys():
         data = data.append(appendPD)
         
 data.to_csv(
-    "data/01_data_collection/raw_data.csv", 
+    "data/mutation-abstracts.csv", 
     sep="\t",
     index=False
 )
@@ -114,4 +114,69 @@ Download Abstracts Data
 
 ## Data Pre-Processing
 
-Although we have collected our daata we still need to do some pre-processing before we can start training our model. The first thing we need to do is remove any duplicate abstracts. An article may appear more than once in our data if it was returned in the search results for more than one gene. However, there are two
+Although we have collected our data, we still need to do some pre-processing before we can start training our model. To do this we can load our data into R and take a look at it.
+
+``` r
+library(tidyverse)
+
+raw_data <- read_delim("./data/mutation-abstracts.csv", delim = "\t") %>%
+  select(pubmed_id, title, abstract, gene, gene_type)
+
+head(raw_data)
+```
+
+    ## # A tibble: 6 × 5
+    ##   pubmed_id title                                       abstract gene  gene_type
+    ##       <dbl> <chr>                                       <chr>    <chr> <chr>    
+    ## 1  35650277 Measurable residual disease analysis in pa… "ABL-cl… ABL1  GOF      
+    ## 2  35647282 Development of a First-in-Class Small-Mole… "Heat s… ABL1  GOF      
+    ## 3  35644022 Prognostic utility of key copy number alte… "T-cell… ABL1  GOF      
+    ## 4  35641210 Chemotherapy Resistance in B-ALL with Cryp… "BCR-AB… ABL1  GOF      
+    ## 5  35641028 Dasatinib suppresses atherosclerotic lesio… "Althou… ABL1  GOF      
+    ## 6  35634195 A rare case of B-lymphoid blast phase of c… "Chroni… ABL1  GOF
+
+We have 5 different variables in the data set
+
+<!-- prettier-ignore-start -->
+| Variable      | Description                                                                    |
+| ------------- | ------------------------------------------------------------------------------ |
+| `pubmed_id`   | A unique number that identifies each article                                   |
+| `title`       | The title of the article                                                       |
+| `abstract`    | The abstract of the article                                                    |
+| `gene`        | The name of the gene that was searched for and returned this article           |
+| `gene_type`   | Whether the gene that was searched for is associated with GOF or LOF mutations |
+<!-- prettier-ignore-end -->
+
+Each row here represents a pubmed article and records the gene that was searched for that returned it. Therefore, there are multiple rows relating to the same article that will have been returned in multiple searches, we can see that in this graph.
+
+![Graph showing number of times each abstract appears in the data set](./figs/counts.png)
+
+We need to make a new table that only has each abstract in it once with a label indicating whether it is a GOF or LOF mutation. We can do this by grouping the data by `pubmed_id` and counting the number of times each article is linked with a GOF related gene and an LOF related gene. We can then convert these two numbers into a `log_score` using the formula
+
+{{< katex >}}
+\\(\log_2[\frac{GOF}{LOF}]\\)
+
+This will return a positive number if the article is more likely to be related to GOF mutations and a negative number if it is more likely to be related to LOF mutations. We can then use this `log_score` to label each article as either GOF or LOF. As a side note, if an article is only returned with respect to GOF genes then the `log_score` will be infinity and negative infinity for LOF. To be on the safe side, if we take our logs to base 2 then we can filter `log_score` to have an absolute value of at least 2. This means that only articles that are only associated with GOF and LOF genes or which are 4 times more associeted with one type are kept. We can then save out this data set to be loaded into whatever language we like for training a model.
+
+``` r
+data <- raw_data %>%
+  group_by(pubmed_id, abstract) %>%
+  summarise(
+    GOF = sum(gene_type == "GOF"),
+    LOF = sum(gene_type == "LOF"),
+    log_score = log2(GOF/LOF)
+  ) %>%
+  filter(
+    abs(log_score) >= 2
+  ) %>%
+  mutate(
+    gene_type = ifelse(log_score > 0, "GOF", "LOF")
+  ) %>%
+  select(pubmed_id, abstract, gene_type)
+
+  write_delim(data, "./data/processed_abstracts.csv", delim = "\t")
+```
+
+## Data Processing
+
+![](./figs/auroc.png)
