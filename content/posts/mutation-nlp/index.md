@@ -1,6 +1,6 @@
 ---
 title: "Classifying Oncogenes Based on PubMED Abstracts"
-date: 2020-08-10
+date: 2023-08-28T12:00:00+01:00
 draft: false
 description: "Training a classifier to recognise gain and loss of function mutations from abstracts of papers on PubMED."
 slug: "mutation-nlp"
