@@ -13,6 +13,9 @@ authors:
 showAuthorsBadges : true 
 ---
 
+Test
+
+<!--
 I am currenlty a PhD student at the [Institute of Genetics and Cancer](https://www.ed.ac.uk/institute-genetics-cancer) in Edinburgh, which is never where I thought I would end up given that when I was 15 I was literally counting down the days until I never had to study biology again. Since then I went to college and university and I studied maths and when it came to choosing what  wanted to write my dissertation on  decided I wanted to do some machine learning and the supervisor I chose was a mathematical biologist. I wrote my dissertation on machine learning, applying it to a scRNA-seq data set and it opened my eyes to the world of genetics and all the cool maths they are using. 
 
 I've now been working in genetics for about two years and I really enjoy it, but when I first started it was very overwhelming to be contantly bombarded with words that I did not know. I've got a lot better but it's still hard sometimes to keep up with presentations. Recently, I was reading a paper and I was finding it hard to keep up with all the biological terms and I wondered "would I be able to train a machine learning algorithm to read biology papers?". This idea stuck with me and I thought it might be a fun idea to try.
@@ -113,3 +116,4 @@ If you would like to follow along with the rest of this project without performi
 ## Data Pre-Processing
 
 Although we have collected our daata we still need to do some pre-processing before we can start training our model. The first thing we need to do is remove any duplicate abstracts. An article may appear more than once in our data if it was returned in the search results for more than one gene. However, there are two
+-->
