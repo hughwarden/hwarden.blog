@@ -110,10 +110,6 @@ You can see here that there are many other bits of information I could have coll
 
 If you would like to follow along with the rest of this project without performing this step yourself, you can download the data set that I created here.
 
-{{< button href="data/mutation-abstracts.csv" target="_self" >}}
-Download Abstracts
-{{< /button >}}
-
 ## Data Pre-Processing
 
 Although we have collected our daata we still need to do some pre-processing before we can start training our model. The first thing we need to do is remove any duplicate abstracts. An article may appear more than once in our data if it was returned in the search results for more than one gene. However, there are two
