@@ -64,7 +64,7 @@ Now we have to iterate over these lists to generate a list of abstracts for each
 from pymed import PubMed
 import pandas as pd
 
-pubmed = PubMed(tool="GeneSearcher", email="hugh.warden@outlook.com")
+pubmed = PubMed(tool="GeneSearcher", email="<YOUR_EMAIL>")
 
 data = pd.DataFrame(columns=['pubmed_id','title','abstract','gene','gene_type','keywords','journal','conclusions','methods','results','copyrights','doi','publication_date','authors'])
 
