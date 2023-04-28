@@ -1,7 +1,7 @@
 ---
-title: "Classifying Oncogenes from PubMED Abstracts"
-date: 2023-04-26T02:46:21+01:00
-description: "Training a classifier to recognise gain and loss of function mutations from abstracts of papers on PubMED."
+title: "Trying to Classify Oncogenes from PubMED Abstracts"
+date: 2023-04-27T21:00:00+01:00
+description: "Trying to train a classifier to recognise gain and loss of function mutations from abstracts of papers on PubMED."
 slug: "mutation-nlp"
 tags: ["Machine Learning", "Genetics", "R", "Python"]
 series: []
@@ -16,7 +16,7 @@ I've now been working in genetics for about two years and I really enjoy it, but
 
 If you would like to see the code for this project you can find it here:
 
-{{< github repo="hwarden162/mutation_nlp" >}}
+{{< github repo="hughwarden/mutation-nlp" >}}
 
 ## The Problem
 
@@ -179,4 +179,62 @@ data <- raw_data %>%
 
 ## Data Processing
 
-![](./figs/auroc.png)
+Now here I have to express again, I am not an expert in text based analysis. However, it starts off pretty similar to what I am used to, I need to make a test/train split of my data. Generally for machine learning I use the `tidymodels` framework in R and so I make the split through the `rsample` package.
+
+``` r
+library(tidymodels)
+
+data_splits <- initial_split(data, prop = 0.8, strata = gene_type)
+data_train <- training(data_splits)
+data_test <- testing(data_splits)
+```
+
+I then have no idea on how to prepare text for machine learning, luckily `tidymodels` has an extension package `textrecipes` that really helped me out. I used `textrecipes` to tokenise all of the abstracts and remove stop words (words that commonly appear in a lot of texts). I then applied a custom filter function that dealt with a lot of domain specific words I found in these biological academic abstracts, you can see the exact steps laid out as comments in the `custom_filter` function. I then stemmed all the words which will take words that come from the same root but have different endings and combine them together and then I kept the top 1000 most common tokens. After this I transformed the data using TF-IDF which is a way of weighting the tokens based on how common they are in each abstract compared to how common they are in the abstracts as a whole. I then used the `step_normalize` function to scale the data to be Normal(0,1) and then used the `themis` package to downsample my data such that there were an equal number of GOF and LOF articles in the training data set.
+
+``` r
+library(textrecipes)
+library(themis)
+
+custom_filter <- function(word) {
+  word = tolower(word)
+  word = str_trim(word)
+  len = str_length(word)
+  
+  # Keeping only words that contain at least one letter
+  v1 <- str_detect(word, "[A-Za-z]")
+  # Keeping words with three or more letters
+  v2 <- len > 2
+  # Removing words that start with a number
+  v3 <- str_starts(word, "[0-9]", negate = TRUE)
+  # Removing words that contain whitespace
+  v4 <- str_detect(word, "\\s+", negate = TRUE)
+  # Removing words containing specific pieces of punctuation
+  v5 <- str_detect(word, "\\.", negate = TRUE)
+  v6 <- str_detect(word, "\\_", negate = TRUE)
+  v7 <- str_detect(word, "\\:", negate = TRUE)
+  # Removing any words with 9 or more letters that contain a number
+  v8 <- !(str_detect(word, "[0-9]") & (len > 8))
+  
+  all(v1, v2, v3, v4, v5, v6, v7)
+}
+
+data_recipe <- recipe(gene_type ~ abstract, data = data_train) %>%
+  step_tokenize(all_predictors()) %>%
+  step_stopwords(all_predictors()) %>%
+  step_tokenfilter(all_predictors(), filter_fun = custom_filter) %>%
+  step_stem(all_predictors()) %>%
+  step_tokenfilter(all_predictors(), max_tokens = 1000) %>%
+  step_tfidf(all_predictors()) %>%
+  step_normalize(all_predictors()) %>%
+  step_downsample(gene_type)
+```
+
+## Model Training
+
+There may be lots of text specific models out there, but I don't know them. This is why I performed the TF-IDF transformation at the end of my recipe, now my data is in a format where each abstract has a row, each word has a column and each entry is a number relating them. This is machine learning I can do! Or at least so I thought. I trained all my favourite models to try and solve this problem and unfortunately didn't get very far. So I broke out the big guns, automatic machine learning from H2O. I am going to do another blog post at some point about the `auto_ml` spec provided by H2O so I won't go into detail here, but essentially this framework tests lots and lots of models and records their performance, which we can see here
+
+![Metrics of models trained](./figs/metrics.png)
+
+Unfortunately, none of our algorithms are really that much better than guessing. It looks like I am going to have to go back to my recipe and improve it, either that or train a better text specific model. If I do have time to come back and give this another go then I will write another blog post and link it to this one. In the mean time, I very much believe that coding, maths and data science are collaborative processes, so please check out my code and play with it yourself and if you do get anywhere with it the please get in touch!
+
+{{< github repo="hughwarden/mutation-nlp" >}}
