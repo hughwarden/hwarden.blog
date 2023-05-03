@@ -12,7 +12,7 @@
 
 [[main]]
   name = "Blog"
-  pageRef = "posts"
+  pageRef = "https://hwarden.blog/posts/"
   weight = 10
 
 [[main]]
@@ -22,13 +22,13 @@
 [[main]]
   name = "Series"
   parent = "Categories"
-  pageRef = "series"
+  pageRef = "https://hwarden.blog/series/"
   weight = 20
 
 [[main]]
   name = "Tags"
   parent = "Categories"
-  pageRef = "tags"
+  pageRef = "https://hwarden.blog/tags/"
   weight = 20
 
 [[main]]

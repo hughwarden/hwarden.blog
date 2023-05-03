@@ -1,7 +1,7 @@
 ---
 title: "It is Mathematically Impossible to be in Tune"
-date: 2023-04-28T21:00:00+01:00
-description: ""
+date: 2023-05-02T21:00:00+01:00
+description: "Using parametric equations to visualise intervals in music"
 slug: "just-intonation"
 tags: ["Music Theory", "Maths"]
 series: []
