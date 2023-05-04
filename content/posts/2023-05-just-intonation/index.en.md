@@ -10,17 +10,17 @@ showAuthor: true
 showAuthorsBadges : true 
 ---
 
-I have been playing trumpet now for almost 18 years, and I actually started on piano a little before that, so music has been a big part of my life. Growing up I played in various bands and ensembles and to keep up with the high standards I used to be able to play at you had to know a lot not just about your instrument but also about music theory. I took music theory classes and exams as a way to improve my understanding and to help me become a better musician, but it was always very formulaic and not that inspiring (there is another post that could be written here about the "westernisation" of music theory and how it is taught but that is for another time). However, a few years after this I started to find YouTube channels like [Adam Neely](https://www.youtube.com/@AdamNeely) and [Jacob Collier](https://www.youtube.com/@jacobcollier) and I started to get more of an appreciation for music theory itself.
+I have been playing trumpet now for almost 18 years, and I actually started on piano a little before that, so music has been a big part of my life. Growing up I played in various bands and ensembles and to keep up with the high standards I used to be able to play at you had to know a lot not just about your instrument but also about music theory. I took music theory classes and exams as a way to improve my understanding and to help me become a better musician, but it was always very formulaic and not that inspiring (there is another post that could be written here about the "westernisation" of music theory and the syllabus they choose to teach but that is for another time). However, a few years after this I started to find YouTube channels like [Adam Neely](https://www.youtube.com/@AdamNeely) and [Jacob Collier](https://www.youtube.com/@jacobcollier) and I started to get more of an appreciation for music theory itself.
 
-The sort of clickbait title I have used for this article has been used many times before by people to talk about the same topic, but to keep themselves relevant to the general audience they tend to shy away from the underlying maths. Being a very amateur music theorist I am going to do the opposite and try and give the basics of the theory before diving much more into the maths.
+The sort of clickbait title I have used for this article has been used many times before by people to talk about the same topic, but to keep themselves relevant to the general audience they tend to shy away from the underlying maths. Being a very amateur music theorist I am going to do the opposite and try and give the basics of the theory before giving a slightly deeper explanation of the maths.
 
 ## Pitch and Intervals
 
-The only two parts of music theory you need to know to understand the paradox I will introduce later is the idea of pitch and intervals and how these relate to being "in tune". Pitch is related to how "high" or "low" a note is, but these concepts of "high" or "low" are ones that we have ascribed to the music, not ones that are intrinsic to itm other cultures use different descriptors. So scientifically speaking, a note is a wave and pitch relates to the frequency with which that wave oscilaltes. The greater the frequency the "higher" the pitch. Frequency is measured in Hertz (Hz), which is the number of oscillations per second. This means that each note can be mapped to a number, that is each note is a wave with a given frequency. For example, most orchestras and musical ensembles will tune to an A (or more specifically an A4, which also tells you what octave the A is in) that has a frequency of 440Hz. This means that the wave associated with the note A (or A4) oscillates 440 times per second and this will be the same for everyone so people can tune separately but still be in tune with each other.
+The only two parts of music theory you need to know to understand the paradox I will introduce later is the idea of pitch and intervals and how these relate to being "in tune". Pitch is related to how "high" or "low" a note is, but these concepts of "high" or "low" are ones that we have ascribed to the music, not ones that are intrinsic to it, other cultures use different descriptors. Scientifically speaking, a note is a wave and pitch relates to the frequency with which that wave oscilaltes. The greater the frequency the "higher" the pitch. Frequency is measured in Hertz (Hz), which is the number of oscillations per second. This means that each note can be mapped to a number, that is each note is a wave with a given frequency. For example, most orchestras and musical ensembles will tune to an A (or more specifically an A4, which also indicates what octave the A is in) that has a frequency of 440Hz. This means that the wave associated with the note A (or A4) oscillates 440 times per second and this will be the same for everyone, so people can tune separately but still be in tune with each other.
 
 ![](./imgs/freq.png)
 
-Now we now that we can take any musical note and use its pitch to map it to a number. An interval refers to the relative pitch between two notes. You calculate an interval by dividing the frequency of one note by the frequency of another (typically the larger frequency is dividied by the smaller one). As we are dividing a number measured in Hz by another number measured in Hz an interval has no units. We will dive more deeply into what the ratio for each interval is later.
+Now we know that we can take any musical note and use its pitch to map it to a number. An interval refers to the relative pitch between two notes. You calculate an interval by dividing the frequency of one note by the frequency of another (typically the larger frequency is dividied by the smaller one). As we are dividing a number measured in Hz by another number measured in Hz an interval has no units. We will dive more deeply into what the ratio for each interval is later.
 
 ## Visualising Intervals
 
@@ -32,7 +32,7 @@ However, there is another way to visualise the interaction beteen these two note
 
 ![](./imgs/harmonograph.jpg "Image from pedrotucker.com")
 
-Unfortunately, I do not own a harmonograph or do I have access to one. I do however, have the ability to code and mathematically recreate one. Luckily, the maths of the harmonograph is fairly simple so I am going to simulate one in R. The harmonograph is essentially just a parametric equation with repsect to time, so we can start off by sampling regular intercals of our parametric variable, which I will call `t`. We can then find our x and y coordinates of two notes of the same pitch by using the following equations:
+Unfortunately, I do not own a harmonograph nor do I have access to one. I do however, have the ability to code and mathematically recreate one. Luckily, the maths of the harmonograph is fairly simple so I am going to simulate one in R. The harmonograph is essentially just a parametric equation with repsect to time, so we can start off by sampling regular intervals of our parametric variable, which I will call `t`. We can then find our x and y coordinates of two notes of the same pitch by using the following equations:
 
 {{< katex >}}
 \\(x = \sin(t)\\)
@@ -62,6 +62,7 @@ expand_grid(
     y = sin(t + phase)
   )
 ```
+
 `expand_grid` will find every combination of `phase` and `t` (our time parameter) and then using `mutate` we can calculate the x and y coordinates for each combination. We can then plot these coordinates using `ggplot2` and `geom_path` to get the plot below (for the sake of simplicity I have only included the actual code to make the plot, not to theme it).
 
 ``` r
@@ -100,7 +101,7 @@ expand_grid(
 
 ![](./imgs/phase.png)
 
-Here you can see multiple representations of the interaction between these two pitches at different phase shifts. There are infinitely many different phase shifts so I hace taken this data, extended the phase shift to 2π and then animated it to show the interaction between these two pitches at every different phase shift. You can see this animation below.
+Here you can see multiple representations of the interaction between these two pitches at different phase shifts. There are infinitely many different phase shifts so I hace taken this data, extended the phase shift range to 2π and then animated it to show the interaction between these two pitches at every different phase shift. You can see this animation below.
 
 ![](./imgs/unison_phase.gif)
 
@@ -108,7 +109,7 @@ Everything I have plotted above is for two notes of the same pitch, we say these
 
 ## What Are the Ratios of Intervals?
 
-Back before civilisation, before we had found the rules of music (or maybe more accurately, before we made up the rules of music) we had an idea of pitch but we didn't know what a "note" was, as all a note really is is a name we give to a certain frequency. We did however, know that some pitches sounded "good" together and some pitches sounded "bad" together. This idea of "good" and "bad" intervals is called consonance and dissonance. This is how the modern western scale came to be, some people found notes the sounded consonant (or good together) and this formed the basis of the notes we use today (this is I think the biggest oversimplification I have ever made in my life, the journey as to how we got to our current system is a long and complicated one, and I am not going to go into it here).
+Back before civilisation, before we had found the rules of music (or maybe more accurately, before we made up the rules of music) we had an idea of pitch but we didn't know what a "note" was, as all a note really is is a name we give to a certain frequency. We did however, know that some pitches sounded "good" together and some pitches sounded "bad" together. This idea of "good" and "bad" intervals is called consonance and dissonance. This is how the modern western scale came to be, some people found notes that sounded consonant (or good together) and this formed the basis of the notes we use today (this is I think the biggest oversimplification I have ever made in my life, the journey as to how we got to our current system is a long and complicated one, and I am not going to go into it here).
 
 Generally what people found was that intervals that were made of "simpler" ratios tended to sound more consonant. A "simple" ratio is a relationship between notes that is charaterised by a fraction containing integers that are very small. For example, the most consonant interval is the unison interval, which has a frequency ratio of 1:1. Another very consonant interval is the octave, these are so consonant we give notes that are an octave apart the same name, all an octave is is a frequency ratio of 2:1. This means that if we take an A at 440Hz, then the note associated with the frequency 880Hz is also an A as 880:440 = 2:1.
 
