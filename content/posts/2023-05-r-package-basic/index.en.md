@@ -1,6 +1,6 @@
 ---
 title: "Creating a Package in R - Getting Started"
-date: 2023-05-03T21:00:00+01:00
+date: 2023-05-25T21:00:00+01:00
 description: "Creating a basic R package from scratch."
 slug: "r-package-basic"
 tags: ["Package Development", "R"]
